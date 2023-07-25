@@ -19,19 +19,35 @@
 		<param-value>classpath:spring/root/*.xml</param-value>
 	</context-param>
 	<!-- ============================================================================== -->
-	
+
 	<!-- ============================================================================== -->
 	<!-- DispatcherServlet 설정 -->
 	<servlet>
 		<servlet-name>DispatcherServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<!--  Spring 설정 파일 제공 -->
+		<!-- Spring 설정 파일 제공 -->
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>classpath:spring/dispatcher/*.xml</param-value>
 		</init-param>
+		<!-- Ch10 404 처리를 @ControllerAdvice에 처리하도록 설정 -->
+		<init-param>
+			<param-name>throwExceptionIfNoHandlerFound</param-name>
+			<param-value>true</param-value>
+		</init-param>
 		<!-- 웹 애플리케이션이 시작할 때 서블릿 객체 생성 -->
 		<load-on-startup>1</load-on-startup>
+		<!-- 멀티파트 파싱을 위한 설정 -->
+		<multipart-config>
+			<!-- 임시 파일이 저장될 디렉토리 -->
+			<location>C:/Temp</location>
+			<!-- 요청 바디에 포함된 파일 하나당의 크기를 제한: 20M(1024 * 1024 * 20) -->	
+			<max-file-size>20971520</max-file-size>
+			<!-- 전체 요청 바디의 사이즈를 제한: 100M(1024*1024*100) -->
+			<max-request-size>104857600</max-request-size>		
+			<!-- 임시 파일로 저장하는 크기의 기준: 1M(1024 * 1024) -->
+			<file-size-threshold>1048576</file-size-threshold>
+		</multipart-config>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DispatcherServlet</servlet-name>
@@ -39,10 +55,9 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	<!-- ============================================================================== -->
-	
+
 	<!-- ============================================================================== -->
 	<!-- POST 한글 데이터를 복원하기 위한 필터 설정 -->
-	
 	<filter>
 		<filter-name>CharacterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -54,7 +69,19 @@
 	<!-- 모든 요청시 필터에서 전처리하고 DispatcherServlet을 실행 -->
 	<filter-mapping>
 		<filter-name>CharacterEncodingFilter</filter-name>
-		<url-pattern>/*</url-pattern> 
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- ============================================================================== -->
+
+	<!-- ============================================================================== -->
+	<filter>
+		<filter-name>Ch02FilterA</filter-name>
+		<filter-class>com.mycompany.springhomework.filter.Ch02FilterA</filter-class>
+	</filter>
+	<!-- 모든 요청시 필터에서 전처리하고 DispatcherServlet을 실행 -->
+	<filter-mapping>
+		<filter-name>Ch02FilterA</filter-name>
+		<url-pattern>/ch02/*</url-pattern>
 	</filter-mapping>
 	<!-- ============================================================================== -->
 </web-app>
